@@ -2,7 +2,7 @@ public class Movie {
     private String title;
     private int year;
     private String certificate;
-    private String runtime;
+    private int runtime;
     private String genre;
     private String rating;
     private String overview;
@@ -15,6 +15,40 @@ public class Movie {
     private String noofvotes;
     private String gross;
 
+    public String getGross() {
+        return gross;
+    }
+    public String getRating() {
+        return rating;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    public int getRuntime() {
+        return runtime;
+    }
+
+    public String getStar1() {
+        return star1;
+    }
+
+    public String getStar3() {
+        return star3;
+    }
+
+    public String getStar4() {
+        return star4;
+    }
+
+    public String getStar2() {
+        return star2;
+    }
+
     public String getGenre() {
         return genre;
     }
@@ -23,7 +57,7 @@ public class Movie {
         return year;
     }
 
-    public Movie(String title, int year, String certificate, String runtime, String genre, String rating,
+    public Movie(String title, int year, String certificate, int runtime, String genre, String rating,
                  String overview, String score, String director, String star1,String star2,String star3,
                  String star4,String noofvotes, String gross){
         this.title=title;
