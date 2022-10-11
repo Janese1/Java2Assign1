@@ -15,6 +15,9 @@ public class Movie {
     private String noofvotes;
     private String gross;
 
+    public Movie getSelf(){
+        return this;
+    }
     public String getGross() {
         return gross;
     }
