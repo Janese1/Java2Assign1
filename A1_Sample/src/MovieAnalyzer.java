@@ -113,9 +113,8 @@ public class MovieAnalyzer {
         Map<String,Integer> result=new LinkedHashMap<>();
         switch (by){
             case "runtime":
-                return list.stream().sorted(Comparator.comparing(Movie::getSelf, (x, y) -> {
-                    return x.getRuntime() == y.getRuntime() ?x.getTitle().compareTo(y.getTitle()):-Integer.compare(x.getRuntime(),y.getRuntime());
-                })).limit(top_k).map(Movie::getTitle).collect(Collectors.toList());
+                return list.stream().sorted(Comparator.comparing(Movie::getSelf,
+                        (x, y) -> x.getRuntime() == y.getRuntime() ?x.getTitle().compareTo(y.getTitle()):-Integer.compare(x.getRuntime(),y.getRuntime()))).limit(top_k).map(Movie::getTitle).collect(Collectors.toList());
             case "overview":
                 list.stream().collect(Collectors.toMap(Movie::getTitle,p->p.getOverview().length(),(p1,p2)->p2))
                 .entrySet().stream().sorted(Map.Entry.<String,Integer>comparingByValue().reversed()
@@ -131,28 +130,28 @@ public class MovieAnalyzer {
             case "rating":
                 List<Movie> newList1 = list.stream().filter(a -> (!a.getRating().equals("")))
                         .collect(Collectors.toList());
-                Map<String, Double> map1 = new HashMap<>();
-                Map<String, Double> result1 = new LinkedHashMap<>();
+                List<Movie> movieList1=new ArrayList<>();
+                Map<String,Double>  result1=new LinkedHashMap<>();
                 for (Movie i :
                         newList1) {
-                    map1.put(i.getStar1(), Double.parseDouble(i.getRating()));
-                    map1.put(i.getStar2(), Double.parseDouble(i.getRating()));
-                    map1.put(i.getStar3(), Double.parseDouble(i.getRating()));
-                    map1.put(i.getStar4(), Double.parseDouble(i.getRating()));
+                    movieList1.add(new Movie(i.getStar1(), Float.parseFloat(i.getRating()))) ;
+                    movieList1.add(new Movie(i.getStar2(), Float.parseFloat(i.getRating())));
+                    movieList1.add(new Movie(i.getStar3(), Float.parseFloat(i.getRating())));
+                    movieList1.add(new Movie(i.getStar4(), Float.parseFloat(i.getRating())));
                 }
-                map1.entrySet().stream().
-                        collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.averagingDouble(Map.Entry::getValue)))
+                movieList1.stream()
+                        .collect(Collectors.groupingBy(Movie::getStar,Collectors.averagingDouble(Movie::getRating2)))
                         .entrySet().stream()
-                        .sorted(Map.Entry.<String, Double>comparingByValue().reversed()
-                                .thenComparing(Map.Entry.comparingByKey()))
-                        .forEachOrdered(x -> result1.put(x.getKey(), x.getValue()));
+                                .sorted(Map.Entry.<String,Double>comparingByValue().reversed()
+                                        .thenComparing(Map.Entry.comparingByKey()))
+                                        .forEachOrdered(x->result1.put(x.getKey(),x.getValue()));
                 //System.out.println(new ArrayList<>(result1.keySet()).subList(0, top_k));
                 return new ArrayList<>(result1.keySet()).subList(0, top_k);
             case "gross":
                 List<Movie> newList2 = list.stream().filter(a -> (!a.getGross().equals("")))
                         .collect(Collectors.toList());
-                Map<String, Integer> map2 = new HashMap<>();
                 Map<String, Double> result2 = new LinkedHashMap<>();
+                List<Movie> movieList2=new ArrayList<>();
                 for (Movie i :
                         newList2) {
                     String[] strArray = i.getGross().split(",");
@@ -161,18 +160,18 @@ public class MovieAnalyzer {
                         sb.append(s);
                     }
                     String str = sb.toString();
-                    map2.put(i.getStar1(), Integer.parseInt(str));
-                    map2.put(i.getStar2(), Integer.parseInt(str));
-                    map2.put(i.getStar3(), Integer.parseInt(str));
-                    map2.put(i.getStar4(), Integer.parseInt(str));
+                    movieList2.add(new Movie(i.getStar1(), Integer.parseInt(str)));
+                    movieList2.add(new Movie(i.getStar2(), Integer.parseInt(str)));
+                    movieList2.add(new Movie(i.getStar3(), Integer.parseInt(str)));
+                    movieList2.add(new Movie(i.getStar4(), Integer.parseInt(str)));
                 }
-                map2.entrySet().stream().
-                        collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.averagingInt(Map.Entry::getValue)))
-                        .entrySet().stream()
-                        .sorted(Map.Entry.<String, Double>comparingByValue().reversed()
+                movieList2.stream()
+                        .collect(Collectors.groupingBy(Movie::getStar,Collectors.averagingDouble(Movie::getGorss2)))
+                                .entrySet().stream()
+                        .sorted(Map.Entry.<String,Double>comparingByValue().reversed()
                                 .thenComparing(Map.Entry.comparingByKey()))
-                        .forEachOrdered(x -> result2.put(x.getKey(), x.getValue()));
-                System.out.println(new ArrayList<>(result2.keySet()).subList(0, top_k));
+                                .forEachOrdered(x->result2.put(x.getKey(),x.getValue()));
+                //System.out.println(new ArrayList<>(result2.keySet()).subList(0, top_k));
                 return new ArrayList<>(result2.keySet()).subList(0, top_k);
         }
         return null;
@@ -187,15 +186,12 @@ public class MovieAnalyzer {
                 .collect(Collectors.toList());
     }
 
-  /*  public static void main(String[] args) throws IOException {
+    /*public static void main(String[] args) throws IOException {
         MovieAnalyzer a = new MovieAnalyzer("resources/imdb_top_500.csv");
-        //Map<String,Integer> x=a.getMovieCountByGenre();
-        //Map<List<String>, Integer> b = a.getCoStarCount();
-        //List<String> x = a.getTopStars(10, "gross");
+        Map<String,Integer> x=a.getMovieCountByGenre();
+        Map<List<String>, Integer> b = a.getCoStarCount();
+        List<String> x = a.getTopStars(15, "rating");
         List<String> x=a.getTopMovies(10,"runtime");
-        *//*for (Movie i :
-                a.list) {
-            System.out.println(i.getYear());*//*
 
     }*/
 }
