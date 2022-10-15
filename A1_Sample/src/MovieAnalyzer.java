@@ -4,40 +4,37 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MovieAnalyzer {
-    private ArrayList<Movie> list;
+  private ArrayList<Movie> list;
 
-    public MovieAnalyzer(String dataset_path) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path), StandardCharsets.UTF_8));
-        reader.readLine();
-        String movie = null;
-        ArrayList<Movie> list = new ArrayList<>();
-        while ((movie = reader.readLine()) != null) {
-            String[] strArray = movie.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-
-            for (int i = 0; i < strArray.length; i++) {
-                if (strArray[i].contains("\"")) {
-                    strArray[i] = strArray[i].substring(1, strArray[i].length() - 1);
-                }
-            }
-
-            if (strArray[2].equals("")) {
-                list.add(new Movie(strArray[1], 0, strArray[3],
-                        Integer.parseInt(strArray[4].substring(0, strArray[4].length() - 4)),
-                        strArray[5], strArray[6], strArray[7],
-                        strArray[8], strArray[9], strArray[10], strArray[11], strArray[12], strArray[13],
-                        strArray[14], strArray[15]));
-            } else {
-                list.add(new Movie(strArray[1], Integer.parseInt(strArray[2]), strArray[3],
-                        Integer.parseInt(strArray[4].substring(0, strArray[4].length() - 4)),
-                        strArray[5], strArray[6], strArray[7],
-                        strArray[8], strArray[9], strArray[10], strArray[11], strArray[12], strArray[13],
-                        strArray[14], strArray[15]));
-            }
+  public MovieAnalyzer(String dataset_path) throws IOException {
+    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(dataset_path), StandardCharsets.UTF_8));
+    reader.readLine();
+    String movie = null;
+    ArrayList<Movie> list = new ArrayList<>();
+    while ((movie = reader.readLine()) != null) {
+      String[] strArray = movie.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+      for (int i = 0; i < strArray.length; i++) {
+        if (strArray[i].contains("\"")) {
+          strArray[i] = strArray[i].substring(1, strArray[i].length() - 1);
         }
-        this.list = new ArrayList<>();
-        this.list.addAll(list);
-
+      }
+      if (strArray[2].equals("")) {
+        list.add(new Movie(strArray[1], 0, strArray[3],
+            Integer.parseInt(strArray[4].substring(0, strArray[4].length() - 4)),
+                strArray[5], strArray[6], strArray[7],
+                strArray[8], strArray[9], strArray[10], strArray[11], strArray[12], strArray[13],
+                strArray[14], strArray[15]));
+      } else {
+        list.add(new Movie(strArray[1], Integer.parseInt(strArray[2]), strArray[3],
+            Integer.parseInt(strArray[4].substring(0, strArray[4].length() - 4)),
+                strArray[5], strArray[6], strArray[7],
+                strArray[8], strArray[9], strArray[10], strArray[11], strArray[12], strArray[13],
+                strArray[14], strArray[15]));
+      }
     }
+    this.list = new ArrayList<>();
+    this.list.addAll(list);
+  }
 
     public Map<Integer, Integer> getMovieCountByYear() {
         Map<Integer, Integer> result = new LinkedHashMap<>();
